@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integração Simples com Gemini AI</title>
-    <!-- Tailwind CSS para estilização rápida -->
+    <title>Gerador de Convites com IA</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Biblioteca para renderizar Markdown (a resposta do Gemini vem formatada) -->
+    <!-- Biblioteca para renderizar Markdown (para a resposta da IA) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* Estilo para a animação do loader */
+        .copy-success {
+            background-color: #28a745 !important;
+            transition: background-color 0.3s ease;
+        }
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -27,134 +29,227 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
         <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white">Converse com a IA Gemini</h1>
-            <p class="text-md text-gray-600 dark:text-gray-400 mt-2">Faça uma pergunta e veja a mágica acontecer. Um projeto simples para testar a integração.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white">Gerador de Convites com IA</h1>
+            <p class="text-md text-gray-600 dark:text-gray-400 mt-2">Use os modelos prontos ou a IA para criar um convite perfeito!</p>
         </header>
 
-        <main class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <!-- Área de Input -->
-            <div class="flex flex-col sm:flex-row gap-4">
+        <main class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-8">
+            <!-- 1. Campo para o nome -->
+            <div>
+                 <label for="guest-name" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">1. Nome do Convidado:</label>
                 <input 
                     type="text" 
-                    id="prompt-input" 
-                    placeholder="Ex: Por que o céu é azul?" 
-                    class="flex-grow bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                    id="guest-name" 
+                    placeholder="Digite o nome aqui..." 
+                    class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                 >
-                <button 
-                    id="submit-button"
-                    class="bg-blue-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-blue-700 active:bg-blue-800 transition duration-200 ease-in-out shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                    <!-- Ícone de envio SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    <span>Enviar</span>
+            </div>
+
+            <!-- 2. Geração com IA (NOVO) -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">2. Geração com IA (Recomendado)</h2>
+                <label for="profile-description" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Descreva o perfil do convidado:</label>
+                <textarea id="profile-description" rows="3" placeholder="Ex: 'É um colega de trabalho ambicioso, bom em vendas e está procurando uma renda extra para realizar o sonho de viajar.'" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"></textarea>
+                <button id="ai-generate-button" class="mt-4 w-full bg-green-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-green-700 active:bg-green-800 transition duration-200 ease-in-out shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                    <span>Gerar Convite com IA</span>
+                    <div id="ai-loader" class="hidden loader"></div>
                 </button>
             </div>
 
-            <!-- Área de Resposta -->
-            <div class="mt-8">
-                <h2 class="text-2xl font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Resposta</h2>
-                <!-- Loader -->
-                <div id="loader" class="hidden mx-auto loader"></div>
-                <!-- Conteúdo da Resposta -->
-                <div id="response-container" class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                    <p class="text-gray-500 dark:text-gray-400">A resposta da IA aparecerá aqui...</p>
+            <!-- 3. Botões de Modelos de Convite -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                 <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">3. Ou Escolha um Modelo Rápido:</h2>
+                 <div id="invite-buttons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <!-- Os botões serão gerados pelo JavaScript -->
+                 </div>
+            </div>
+
+            <!-- 4. Área do Convite Gerado -->
+            <div>
+                <h2 class="text-2xl font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Resultado:</h2>
+                <div class="relative">
+                    <textarea 
+                        id="response-container" 
+                        rows="8"
+                        class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 prose dark:prose-invert max-w-none"
+                    >O seu convite aparecerá aqui...</textarea>
+                    <button id="copy-button" class="absolute top-2 right-2 bg-blue-600 text-white font-semibold rounded-lg px-4 py-2 hover:bg-blue-700 active:bg-blue-800 transition duration-200 ease-in-out shadow-md">
+                        Copiar
+                    </button>
                 </div>
             </div>
         </main>
 
         <footer class="text-center mt-8 text-gray-500 dark:text-gray-400 text-sm">
-            <p>Projeto criado com HTML, Tailwind CSS e a API do Gemini.</p>
+            <p>Adaptado para gerar convites personalizados com IA.</p>
         </footer>
     </div>
 
     <script>
         // --- Referências aos elementos do DOM ---
-        const promptInput = document.getElementById('prompt-input');
-        const submitButton = document.getElementById('submit-button');
+        const guestNameInput = document.getElementById('guest-name');
+        const buttonsContainer = document.getElementById('invite-buttons');
         const responseContainer = document.getElementById('response-container');
-        const loader = document.getElementById('loader');
+        const copyButton = document.getElementById('copy-button');
+        const profileDescriptionInput = document.getElementById('profile-description');
+        const aiGenerateButton = document.getElementById('ai-generate-button');
+        const aiLoader = document.getElementById('ai-loader');
+
+        // --- Textos dos convites (Modelos Prontos) ---
+        const convites = {
+            'convite_1': { title: "📈 Profissional", text: "Oi [Nome do Convidado], tudo bem? Estou trabalhando em um projeto que está dando super certo e lembrei de você. Acho que pode ser algo interessante para o seu perfil, com potencial de crescimento e ótimos resultados! Podemos marcar uma conversa rápida para eu te explicar direitinho? Será ótimo compartilhar essa oportunidade com você." },
+            'convite_2': { title: "😊 Amigável", text: "Oi [Nome do Convidado]! Como você está? Descobri uma oportunidade incrível que está me ajudando muito financeiramente, e logo lembrei de você. Acho que poderia te interessar! É algo flexível, que encaixa bem na rotina e dá pra fazer no seu ritmo. Que tal marcarmos um papo para eu te explicar melhor? 😊" },
+            'convite_3': { title: "🌍 Flexível", text: "Oi [Nome do Convidado]! Tudo bem? Sei que você valoriza a liberdade de horário e a flexibilidade. Por isso, pensei em te falar sobre um projeto que estou desenvolvendo: super flexível e com possibilidade de trabalhar de qualquer lugar. Podemos marcar uma conversa rápida para te explicar tudo. É uma ótima chance de gerar renda e ter mais liberdade! O que acha?" },
+            'convite_4': { title: "💵 Renda Extra", text: "Oi [Nome do Convidado], como estão as coisas? Já pensou em conseguir uma renda extra? Tenho uma oportunidade que pode encaixar bem com seu ritmo, super flexível. Podemos marcar uma conversa rápida? Assim te explico direitinho como funciona e você vê se faz sentido para você. 😊" },
+            'convite_5': { title: "🚀 Empreendedor", text: "Oi [Nome do Convidado]! Lembrei de você e do seu perfil empreendedor. Como estão as coisas? Estou desenvolvendo um projeto que tem transformado a vida de muita gente e achei que você poderia gostar de conhecer. É uma oportunidade com grande potencial e suporte para empreender. Posso te explicar tudo em uma conversa rápida, assim te mostro todos os detalhes! Será ótimo compartilhar isso com você." },
+            'convite_6': { title: "👀 Curioso", text: "Oi [Nome do Convidado]! Lembrei de você, tudo bem? Tô envolvido em um projeto novo e muito bacana, e achei que você poderia se interessar. 😊 Te explico melhor quando tivermos um tempinho para conversar. Acho que vai te surpreender! 😉" },
+            'convite_7': { title: "✨ Inspirador", text: "Oi [Nome do Convidado]! Como você está? Estou trabalhando em um projeto que realmente mudou minha visão sobre alcançar meus sonhos e objetivos. É uma oportunidade que não só aumenta a renda, mas também oferece desenvolvimento pessoal e crescimento. Quer que eu te conte mais?" },
+            'convite_8': { title: "⏳ P/ Ocupados", text: "Oi [Nome do Convidado]! Como estão as coisas? Entendo sua rotina! Eu também estava com a agenda bem cheia quando descobri uma forma de aumentar minha renda, mesmo com a agenda apertada. Acho que poderia te interessar! É uma oportunidade flexível, que você pode fazer no seu próprio ritmo e sem comprometer muito tempo. Podemos bater um papo rápido sobre?" },
+            'convite_9': { title: "📊 Estabilidade", text: "Oi [Nome do Convidado]! Tudo certo? Estou envolvido(a) em um projeto que oferece uma oportunidade de gerar uma renda extra de forma estável e segura. Acho que você poderia gostar! Podemos conversar rapidinho? Assim te conto tudo e você vê se se encaixa no que está buscando." },
+            'convite_10': { title: "🕒 Autonomia", text: "Oi [Nome do Convidado]! Como estão as coisas? Estou com uma oportunidade que oferece mais autonomia e liberdade para você decidir seu ritmo e seu horário. Pensei que poderia ser algo que você gostaria! Posso te explicar melhor em uma conversa rápida. É uma oportunidade de ter controle sobre sua renda e seu tempo. Que tal?" },
+            'convite_11': { title: "🧠 Inovador", text: "Oi [Nome do Convidado]! Tenho explorado novas ideias e queria compartilhar com você um projeto que pode ser revolucionário. Estou buscando pessoas com visão e queiram inovar. Posso te contar mais?" },
+            'convite_12': { title: "🤝 Networking", text: "Oi [Nome do Convidado]! Admiro sua habilidade de fazer conexões! Estou envolvido em um projeto com um grande potencial de networking, abrindo portas para novas oportunidades. Posso te mostrar como você pode usar sua rede para prosperar?" },
+            'convite_13': { title: "🌱 Crescimento", text: "Oi [Nome do Convidado]! Seu espírito de crescimento me inspira! Estou desenvolvendo um projeto que além de resultados financeiros oferece muito crescimento pessoal e profissional. Quer saber mais sobre essa jornada?" },
+            'convite_14': { title: "🎁 Oportunidade", text: "Oi [Nome do Convidado]! Tenho uma oportunidade exclusiva que acho que você vai adorar! Estou abrindo as portas de um projeto que está transformando a vida de muitas pessoas. Que tal dar uma olhada de perto?" },
+            'convite_15': { title: "💡 Solução", text: "Oi [Nome do Convidado]! Sabendo que você sempre está procurando soluções, tenho uma ideia que pode otimizar algo em sua vida!  Acredito que vai se encaixar com seus objetivos! Podemos marcar um horário para te explicar melhor?" }
+        };
+
+        // --- Gera os botões dos modelos ---
+        for (const key in convites) {
+            const button = document.createElement('button');
+            button.dataset.key = key;
+            button.innerHTML = convites[key].title;
+            button.className = "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-lg p-3 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200 ease-in-out";
+            buttonsContainer.appendChild(button);
+        }
+
+        // --- Função para gerar convite com MODELOS ---
+        buttonsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            if (!button) return;
+
+            const guestName = guestNameInput.value.trim();
+            if (!guestName) {
+                alert('Por favor, digite o nome do convidado primeiro.');
+                guestNameInput.focus();
+                return;
+            }
+
+            const conviteKey = button.dataset.key;
+            const template = convites[conviteKey].text;
+            
+            const finalInvite = template.replace(/\[Nome do Convidado\]/g, guestName);
+            
+            responseContainer.value = finalInvite;
+        });
 
         // --- Função para chamar a API do Gemini ---
         async function getGeminiResponse(prompt) {
-            // A chave da API será injetada pelo ambiente, então deixamos em branco.
-            const apiKey = "AIzaSyDpLcBPS6QYh4iXwUReEfpxgdDadzGB1zc"; 
+            const apiKey = "AIzaSyDpLcBPS6QYh4iXwUReEfpxgdDadzGB1zc"; // <-- COLOQUE SUA API KEY AQUI
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-            // --- Prepara os dados para a requisição ---
             const payload = {
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }]
+                contents: [{ parts: [{ text: prompt }] }]
             };
 
             try {
-                // --- Faz a chamada para a API ---
                 const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 
-                // --- Verifica se a requisição foi bem sucedida ---
                 if (!response.ok) {
                     const errorBody = await response.json();
                     throw new Error(`HTTP error! status: ${response.status} - ${errorBody.error.message}`);
                 }
                 
-                // --- Extrai a resposta ---
                 const data = await response.json();
                 
-                if (data.candidates && data.candidates.length > 0) {
-                    const text = data.candidates[0].content.parts[0].text;
-                    // Usa a biblioteca 'marked' para converter a resposta de Markdown para HTML
-                    return marked.parse(text);
+                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content.parts.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
                 } else {
-                    return "<p>Não foi possível obter uma resposta. Tente novamente.</p>";
+                    return "Não foi possível obter uma resposta da IA. Verifique se o prompt não viola as políticas de segurança.";
                 }
 
             } catch (error) {
                 console.error("Erro ao chamar a API do Gemini:", error);
-                return `<p class="text-red-500"><strong>Ocorreu um erro:</strong> ${error.message}</p>`;
+                return `Ocorreu um erro: ${error.message}. Verifique sua Chave de API e a conexão.`;
             }
         }
-        
-        // --- Função para lidar com o envio ---
-        const handleSubmission = async () => {
-            const prompt = promptInput.value.trim();
-            if (!prompt) {
-                alert('Por favor, digite uma pergunta.');
+
+        // --- Função para gerar convite com IA ---
+        const handleAiSubmission = async () => {
+            const guestName = guestNameInput.value.trim();
+            const profileDescription = profileDescriptionInput.value.trim();
+
+            if (!guestName) {
+                alert('Por favor, digite o nome do convidado.');
+                guestNameInput.focus();
+                return;
+            }
+            if (!profileDescription) {
+                alert('Por favor, descreva o perfil do convidado para a IA.');
+                profileDescriptionInput.focus();
                 return;
             }
 
-            // --- Atualiza a UI para o estado de carregamento ---
-            submitButton.disabled = true;
-            submitButton.querySelector('span').textContent = 'Pensando...';
-            loader.classList.remove('hidden');
-            responseContainer.innerHTML = '';
+            // --- Constrói o prompt detalhado para a IA ---
+            const prompt = `
+                Crie um convite profissional e persuasivo para um negócio de marketing de rede.
+                
+                **Instruções:**
+                1.  **Destinatário:** O convite é para "${guestName}".
+                2.  **Perfil do Destinatário:** ${profileDescription}. Adapte o tom e os argumentos do convite para este perfil.
+                3.  **Meu Time:** O nome da nossa equipe é "Equipe de Triunfo". Mencione isso de forma positiva.
+                4.  **Objetivo:** O objetivo principal é convencer a pessoa a participar de uma apresentação de negócios online para conhecer a oportunidade.
+                5.  **Tom:** Mantenha um tom profissional, mas inspirador e amigável. Evite clichês e linguagem de "dinheiro fácil". Foque em crescimento, oportunidade e empreendedorismo.
+                6.  **Estrutura:** Comece com uma saudação personalizada, conecte com o perfil da pessoa, apresente a oportunidade sutilmente, mencione a força da "Equipe de Triunfo" e termine com uma chamada para ação clara para agendar a apresentação.
+                
+                Gere apenas o texto do convite.
+            `;
 
-            // --- Obtém a resposta e atualiza a UI ---
+            // --- Atualiza a UI para o estado de carregamento ---
+            aiGenerateButton.disabled = true;
+            aiGenerateButton.querySelector('span').textContent = 'Gerando...';
+            aiLoader.classList.remove('hidden');
+            responseContainer.value = '';
+
+            // --- Obtém a resposta da IA e atualiza a UI ---
             const result = await getGeminiResponse(prompt);
-            responseContainer.innerHTML = result;
+            responseContainer.value = result.trim();
 
             // --- Restaura a UI ao estado normal ---
-            loader.classList.add('hidden');
-            submitButton.disabled = false;
-            submitButton.querySelector('span').textContent = 'Enviar';
+            aiLoader.classList.add('hidden');
+            aiGenerateButton.disabled = false;
+            aiGenerateButton.querySelector('span').textContent = 'Gerar Convite com IA';
         };
 
-        // --- Adiciona os listeners de eventos ---
-        submitButton.addEventListener('click', handleSubmission);
+        aiGenerateButton.addEventListener('click', handleAiSubmission);
 
-        promptInput.addEventListener('keydown', (event) => {
-            // Permite enviar com "Enter"
-            if (event.key === 'Enter') {
-                handleSubmission();
+
+        // --- Função para copiar o texto ---
+        copyButton.addEventListener('click', () => {
+            const textToCopy = responseContainer.value;
+            if (textToCopy && textToCopy !== "O seu convite aparecerá aqui...") {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = 'Copiado!';
+                    copyButton.classList.add('copy-success');
+
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                        copyButton.classList.remove('copy-success');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Erro ao copiar texto: ', err);
+                    alert('Não foi possível copiar o texto.');
+                });
+            } else {
+                alert('Gere um convite antes de copiar.');
             }
         });
     </script>
