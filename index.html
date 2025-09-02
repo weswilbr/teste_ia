@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração Simples com Gemini AI</title>
+    <!-- Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Biblioteca para renderizar Markdown (a resposta do Gemini vem formatada) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Estilo para a animação do loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white">Converse com a IA Gemini</h1>
+            <p class="text-md text-gray-600 dark:text-gray-400 mt-2">Faça uma pergunta e veja a mágica acontecer. Um projeto simples para testar a integração.</p>
+        </header>
+
+        <main class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <!-- Área de Input -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input 
+                    type="text" 
+                    id="prompt-input" 
+                    placeholder="Ex: Por que o céu é azul?" 
+                    class="flex-grow bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                >
+                <button 
+                    id="submit-button"
+                    class="bg-blue-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-blue-700 active:bg-blue-800 transition duration-200 ease-in-out shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                    <!-- Ícone de envio SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    Enviar
+                </button>
+            </div>
+
+            <!-- Área de Resposta -->
+            <div class="mt-8">
+                <h2 class="text-2xl font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Resposta</h2>
+                <!-- Loader -->
+                <div id="loader" class="hidden mx-auto loader"></div>
+                <!-- Conteúdo da Resposta -->
+                <div id="response-container" class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                    <p class="text-gray-500 dark:text-gray-400">A resposta da IA aparecerá aqui...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-8 text-gray-500 dark:text-gray-400 text-sm">
+            <p>Projeto criado com HTML, Tailwind CSS e a API do Gemini.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Referências aos elementos do DOM ---
+        const promptInput = document.getElementById('prompt-input');
+        const submitButton = document.getElementById('submit-button');
+        const responseContainer = document.getElementById('response-container');
+        const loader = document.getElementById('loader');
+
+        // --- Função para chamar a API do Gemini ---
+        async function getGeminiResponse(prompt) {
+            // A chave da API será injetada pelo ambiente, então deixamos em branco.
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            // --- Prepara os dados para a requisição ---
+            const payload = {
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
+            };
+
+            try {
+                // --- Faz a chamada para a API ---
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                // --- Verifica se a requisição foi bem sucedida ---
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorBody.error.message}`);
+                }
+                
+                // --- Extrai a resposta ---
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates.length > 0) {
+                    const text = data.candidates[0].content.parts[0].text;
+                    // Usa a biblioteca 'marked' para converter a resposta de Markdown para HTML
+                    return marked.parse(text);
+                } else {
+                    return "<p>Não foi possível obter uma resposta. Tente novamente.</p>";
+                }
+
+            } catch (error) {
+                console.error("Erro ao chamar a API do Gemini:", error);
+                return `<p class="text-red-500"><strong>Ocorreu um erro:</strong> ${error.message}</p>`;
+            }
+        }
+        
+        // --- Função para lidar com o envio ---
+        const handleSubmission = async () => {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('Por favor, digite uma pergunta.');
+                return;
+            }
+
+            // --- Atualiza a UI para o estado de carregamento ---
+            submitButton.disabled = true;
+            submitButton.querySelector('span:last-child').textContent = 'Pensando...';
+            loader.classList.remove('hidden');
+            responseContainer.innerHTML = '';
+
+            // --- Obtém a resposta e atualiza a UI ---
+            const result = await getGeminiResponse(prompt);
+            responseContainer.innerHTML = result;
+
+            // --- Restaura a UI ao estado normal ---
+            loader.classList.add('hidden');
+            submitButton.disabled = false;
+            submitButton.querySelector('span:last-child').textContent = 'Enviar';
+        };
+
+        // --- Adiciona os listeners de eventos ---
+        submitButton.addEventListener('click', handleSubmission);
+
+        promptInput.addEventListener('keydown', (event) => {
+            // Permite enviar com "Enter"
+            if (event.key === 'Enter') {
+                handleSubmission();
+            }
+        });
+    </script>
+
+</body>
+</html>
