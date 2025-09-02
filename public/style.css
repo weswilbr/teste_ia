@@ -1,11 +1,8 @@
-.copy-success {
-    background-color: #28a745 !important;
-    transition: background-color 0.3s ease;
-}
+/* NOME DO ARQUIVO: public/style.css */
 
 .loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    border: 4px solid #f3f3f3; /* Cinza claro */
+    border-top: 4px solid #3b82f6; /* Azul */
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -13,10 +10,7 @@
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
+
