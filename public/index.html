@@ -1,12 +1,11 @@
+<!-- NOME DO ARQUIVO: public/index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Convites com IA</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
@@ -14,67 +13,49 @@
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white">Gerador de Convites com IA</h1>
-            <p class="text-md text-gray-600 dark:text-gray-400 mt-2">Use os modelos prontos ou a IA para criar um convite perfeito!</p>
+            <p class="text-md text-gray-600 dark:text-gray-400 mt-2">Use modelos ou a IA para criar um convite perfeito!</p>
         </header>
 
         <main class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-8">
-            <!-- 1. Campo para o nome -->
+            <!-- 1. Nome do Convidado -->
             <div>
                  <label for="guest-name" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">1. Nome do Convidado:</label>
-                <input 
-                    type="text" 
-                    id="guest-name" 
-                    placeholder="Digite o nome aqui..." 
-                    class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                >
+                <input type="text" id="guest-name" placeholder="Digite o nome aqui..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
             </div>
 
             <!-- 2. Geração com IA -->
             <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">2. Geração com IA (Recomendado)</h2>
                 <label for="profile-description" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Descreva o perfil do convidado:</label>
-                <textarea id="profile-description" rows="3" placeholder="Ex: 'É um colega de trabalho ambicioso, bom em vendas e está procurando uma renda extra para realizar o sonho de viajar.'" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"></textarea>
+                <textarea id="profile-description" rows="3" placeholder="Ex: 'É um colega ambicioso, bom em vendas e procura uma renda extra.'" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"></textarea>
                 
                 <div class="mt-4">
                     <label class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Escolha o tom:</label>
                     <div class="flex gap-6">
-                        <label class="flex items-center cursor-pointer">
-                            <input type="radio" name="tone" value="profissional e formal" class="form-radio text-blue-600 focus:ring-blue-500" checked>
-                            <span class="ml-2 dark:text-gray-300">Formal</span>
-                        </label>
-                        <label class="flex items-center cursor-pointer">
-                            <input type="radio" name="tone" value="amigável e informal" class="form-radio text-blue-600 focus:ring-blue-500">
-                            <span class="ml-2 dark:text-gray-300">Informal</span>
-                        </label>
+                        <label class="flex items-center cursor-pointer"><input type="radio" name="tone" value="profissional e formal" class="form-radio text-blue-600" checked><span class="ml-2 dark:text-gray-300">Formal</span></label>
+                        <label class="flex items-center cursor-pointer"><input type="radio" name="tone" value="amigável e informal" class="form-radio text-blue-600"><span class="ml-2 dark:text-gray-300">Informal</span></label>
                     </div>
                 </div>
 
-                <button id="ai-generate-button" class="mt-4 w-full bg-green-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-green-700 active:bg-green-800 transition duration-200 ease-in-out shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                <button id="ai-generate-button" class="mt-4 w-full bg-green-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-green-700 transition duration-200 shadow-md disabled:bg-gray-400 flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
                     <span>Gerar Convite com IA</span>
                     <div id="ai-loader" class="hidden loader"></div>
                 </button>
             </div>
 
-            <!-- 3. Botões de Modelos de Convite -->
+            <!-- 3. Modelos Rápidos -->
             <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                  <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">3. Ou Escolha um Modelo Rápido:</h2>
-                 <div id="invite-buttons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                 </div>
+                 <div id="invite-buttons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
             </div>
 
-            <!-- 4. Área do Convite Gerado -->
+            <!-- 4. Resultado -->
             <div>
                 <h2 class="text-2xl font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">4. Resultado:</h2>
                 <div class="relative">
-                    <textarea 
-                        id="response-container" 
-                        rows="8"
-                        class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 prose dark:prose-invert max-w-none"
-                    >O seu convite aparecerá aqui...</textarea>
-                    <button id="copy-button" class="absolute top-2 right-2 bg-blue-600 text-white font-semibold rounded-lg px-4 py-2 hover:bg-blue-700 active:bg-blue-800 transition duration-200 ease-in-out shadow-md">
-                        Copiar
-                    </button>
+                    <textarea id="response-container" rows="8" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3">O seu convite aparecerá aqui...</textarea>
+                    <button id="copy-button" class="absolute top-2 right-2 bg-blue-600 text-white font-semibold rounded-lg px-4 py-2 hover:bg-blue-700 transition shadow-md">Copiar</button>
                 </div>
             </div>
 
@@ -83,7 +64,7 @@
                 <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">5. Compartilhar</h2>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <input type="tel" id="whatsapp-number" placeholder="Telefone com DDD (ex: 11987654321)" class="flex-grow bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:outline-none transition">
-                    <button id="whatsapp-share-button" class="bg-green-500 text-white font-semibold rounded-lg px-6 py-3 hover:bg-green-600 active:bg-green-700 transition duration-200 ease-in-out shadow-md flex items-center justify-center gap-2">
+                    <button id="whatsapp-share-button" class="bg-green-500 text-white font-semibold rounded-lg px-6 py-3 hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.75 13.96c.25.13.42.2.46.2a.38.38 0 0 1 .18.42c-.06.26-.45.9-.56 1.05c-.1.15-.26.2-.4.13c-.15-.06-.6-.26-1.12-.5c-.54-.25-1.04-.58-1.48-.98c-.44-.4-.8-1-.9-1.16c-.1-.18-.04-.28.04-.38c.08-.08.18-.2.25-.26c.08-.08.13-.13.18-.2a.5.5 0 0 0 .04-.42c-.05-.13-.45-1.08-.6-1.48c-.16-.4-.3-.34-.42-.34c-.1-.02-1 .08-1.13.08c-.13 0-.3.03-.45.2c-.15.15-.58.55-.58 1.35s.6 1.58.68 1.7c.08.1.58 1.25 2 2.3c1.4 1.05 2.15 1.25 2.53 1.25c.38 0 .6-.08.7-.28c.1-.2.45-.85.5-1.1c.06-.25.04-.48-.03-.55c-.08-.08-.18-.13-.38-.23zM12 2C6.5 2 2 6.5 2 12s4.5 10 10 10s10-4.5 10-10s-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8s8 3.6 8 8s-3.6 8-8 8z"/></svg>
                         <span>WhatsApp</span>
                     </button>
@@ -92,11 +73,11 @@
         </main>
 
         <footer class="text-center mt-8 text-gray-500 dark:text-gray-400 text-sm">
-            <p>Adaptado para gerar convites personalizados com IA.</p>
+            <p>Projeto com API segura na Vercel.</p>
         </footer>
     </div>
 
-    <!-- Lógica da Página -->
     <script src="script.js" defer></script>
 </body>
 </html>
+
